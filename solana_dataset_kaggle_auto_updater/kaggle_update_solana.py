@@ -68,10 +68,6 @@ MERGED_FOLDER = os.path.join(BASE_DIR, "merged_data")  # New folder for merged f
 
 def clean_folder(folder_path):
     """Clean the specified folder."""
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path, exist_ok=True)
-        return
-    
     for file in os.listdir(folder_path):
         file_path = os.path.join(folder_path, file)
         if os.path.isfile(file_path):
@@ -132,7 +128,7 @@ def copy_metadata(src_folder, dest_folder):
     """Copy the metadata file to the destination folder."""
     import json
     
-    # Create a metadata file for Solana dataset
+    # Create a simple metadata file instead of copying the complex one
     metadata = {
         "title": "Solana Price Data Binance API (2020–Now)",
         "id": "novandraanugrah/solana-price-data-binance-api-2020now",
@@ -142,7 +138,7 @@ def copy_metadata(src_folder, dest_folder):
     metadata_file = os.path.join(dest_folder, "dataset-metadata.json")
     with open(metadata_file, 'w') as f:
         json.dump(metadata, f, indent=2)
-    print(f"Created metadata file at {metadata_file}")
+    print(f"Created minimal metadata file at {metadata_file}")
 
 def upload_to_kaggle(upload_folder, dataset_slug, version_notes):
     """Upload the updated dataset to Kaggle without using the proxy."""
@@ -166,10 +162,7 @@ def upload_to_kaggle(upload_folder, dataset_slug, version_notes):
             os.environ["HTTPS_PROXY"] = original_https_proxy
 
 def main():
-    # Solana dataset slug - you'll need to create this on Kaggle first
     dataset_slug = "novandraanugrah/solana-price-data-binance-api-2020now"
-    
-    # Create directories if they don't exist
     os.makedirs(DATA_FOLDER, exist_ok=True)
     os.makedirs(NEW_DATA_FOLDER, exist_ok=True)
     os.makedirs(MERGED_FOLDER, exist_ok=True)
@@ -183,7 +176,6 @@ def main():
     download_kaggle_dataset(dataset_slug, DATA_FOLDER)
 
     # Step 3: Fetch new data for all timeframes
-    # Start from 2025-01-01 to get only the latest data for updates
     start_date = "2025-01-01"
     end_date = datetime.now().strftime("%Y-%m-%d")
     timeframes = {
@@ -198,12 +190,10 @@ def main():
         fetch_binance_data("SOLUSDT", tf_interval, start_date, end_date, output_file)
 
     # Step 4: Merge new data with old datasets and save the merged files in MERGED_FOLDER
-    current_year = datetime.now().year
     for tf_name, _ in timeframes.items():
-        # Solana data files follow the pattern sol_{timeframe}_data_2020_to_{current_year}.csv
-        old_file = os.path.join(DATA_FOLDER, f"sol_{tf_name}_data_2020_to_{current_year}.csv")
+        old_file = os.path.join(DATA_FOLDER, f"sol_{tf_name}_data_2020_to_2025.csv")
         new_file = os.path.join(NEW_DATA_FOLDER, f"{tf_name}.csv")
-        merged_file = os.path.join(MERGED_FOLDER, f"sol_{tf_name}_data_2020_to_{current_year}.csv")
+        merged_file = os.path.join(MERGED_FOLDER, f"sol_{tf_name}_data_2020_to_2025.csv")
         merge_datasets(old_file, new_file, merged_file)
     
     # Copy metadata file from DATA_FOLDER to MERGED_FOLDER so that Kaggle API finds it

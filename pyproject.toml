@@ -1,28 +1,18 @@
 [tool.poetry]
 name = "solana-dataset-kaggle-auto-updater"
 version = "0.1.0"
-description = "Automated Solana historical data fetcher and Kaggle dataset updater"
-authors = ["Novandra Anugrah <your.email@example.com>"]
-readme = "README.md"
-packages = [{include = "solana_dataset_kaggle_auto_updater"}]
+description = "Automatically update solana datasets on Kaggle with Binance data."
+authors = ["Novandra Anugrah <novandraanugrah91@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
-pandas = "^1.5.0"
-python-binance = "^1.0.19"
-python-dotenv = "^1.0.0"
-kaggle = "^1.5.16"
-requests = "^2.31.0"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.0.0"
-black = "^23.0.0"
-flake8 = "^6.0.0"
+python = "^3.10"
+pandas = "^2.2.2"
+requests = "^2.32.3"
+kaggle = "^1.6.17"
+python-binance = "^1.0.27"
+python-dotenv = "^1.0.1"
+PySocks = "^1.7.1"
 
 [build-system]
 requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-update-solana = "solana_dataset_kaggle_auto_updater.kaggle_update_solana:main"
-fetch-full-solana = "fetch_full_sol_data:main" 
+build-backend = "poetry.core.masonry.api" 
